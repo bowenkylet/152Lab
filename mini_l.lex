@@ -87,11 +87,11 @@ IDENT_ERR2      {LETTER}+({LETTER}|{DIGIT}|[_])*[_]
 float string2float(char* str) {
         return 0.0f;
 }
-
+/*
 int main(int argc, char *argv[]) {
         yyin = fopen(argv[1],"r");
         yylex();
         return 0;
 }
-
+*/
 

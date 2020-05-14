@@ -32,8 +32,8 @@ int yylex(void);
 
 %%
 
-Program			: /* empty */	//% {printf("prog_start -> epsilon\n");}
-			| Program Function	//% {printf("prog_start -> functions\n");}
+Program			: /* empty */	{printf("prog_start -> epsilon\n");}
+			| Program Function	{printf("prog_start -> functions\n");}
 			;
 
 
@@ -129,35 +129,31 @@ Expression		: Multiplicative-Expr //% {printf("Expression -> Multiplicative-Expr
 Multiplicative-Expr	: Term MET //% {printf("Multiplicative-Expr -> Term MET\n");}
 			;
 
-MET			: //% {printf("MET -> epsilon\n");}
-			| MULT Term MET //% {printf("MET -> MULT Term MET\n");}
-			| DIV Term MET //% {printf("MET -> DIV Term MET\n");}
-			| MOD Term MET //% {printf("MET -> MOD Term MET\n");}
+MET			: {printf("MET -> epsilon\n");}
+			| MULT Term MET	{printf("MET -> MULT Term MET\n");}
+			| DIV Term MET	{printf("MET -> DIV Term MET\n");}
+			| MOD Term MET	{printf("MET -> MOD Term MET\n");}
 			;
 
-Term			: Term_val //% {printf("Term -> Term_val\n");}
-			| IDENTIFIER L_PAREN Term_exp R_PAREN //% {printf("Term -> L_PAREN Term_exp R_PAREN\n");}
+Term			: Term_val	{printf("Term -> Term_val\n");}
+			| IDENTIFIER L_PAREN Term_exp R_PAREN	{printf("Term -> L_PAREN Term_exp R_PAREN\n");}
 			;
 
-Term_val		: Var //% {printf("Term_val -> Var\n");}
-			| NUMBER //% {printf("Term_val -> NUMBER\n");}
-			| L_PAREN Expression R_PAREN //% {printf("Term_val L_PAREN Expression R_PAREN\n");}
+Term_val		: Var	{printf("Term_val -> Var\n");}
+			| NUMBER	{printf("Term_val -> NUMBER\n");}
+			| L_PAREN Expression R_PAREN	{printf("Term_val L_PAREN Expression R_PAREN\n");}
 			;
 
-Term_exp		: //% {printf("Term_exp -> epsilon\n");}
-			| Expression //% {printf("Term_exp -> Expression\n");}
-			| Expression COMMA Term_exp //% {printf("Term_exp -> Expression COMMA Term_exp\n");}
+Term_exp		: 	{printf("Term_exp -> epsilon\n");}
+			| Expression	{printf("Term_exp -> Expression\n");}
+			| Expression COMMA Term_exp	{printf("Term_exp -> Expression COMMA Term_exp\n");}
 			;
 
-Var			: IDENTIFIER //% {printf("Var -> IDENTIFIER\n");}
-			| IDENTIFIER L_SQUARE_BRACKET Expression R_SQUARE_BRACKET //% {printf("Var -> L_SQUARE_BRACKET Expression R_SQUARE_BRACKET\n");}
+Var			: IDENTIFIER	{printf("Var -> IDENTIFIER\n");}
+			| IDENTIFIER L_SQUARE_BRACKET Expression R_SQUARE_BRACKET	{printf("Var -> L_SQUARE_BRACKET Expression R_SQUARE_BRACKET\n");}
 			;
 
 %%
-
-int main(){
-yyparse();
-}
 
 int yyerror(char* s)
 {
@@ -169,4 +165,6 @@ int yyerror(char* s)
   exit(1);
 }
 
-
+int main(){
+	yyparse();
+}
