@@ -21,9 +21,9 @@ primes:
 		cat primes.min | ./lexer
 
 bison:
-		bison -d -v mini_l.y
+		bison -d -v --file-prefix=y  mini_l.y
 		flex mini_l.lex
-		gcc mini_l.tab.c lex.yy.c -lfl -o parser
+		gcc -o parser y.tab.c lex.yy.c -lfl
 
 test:
 		cat primes.min | parser
