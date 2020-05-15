@@ -14,7 +14,7 @@ int yylex(void);
 
 %token PROGRAM FUNCTION BEGIN_PROGRAM END_PROGRAM INTEGER ARRAY OF IF THEN ENDIF ELSE RETURN
 %token WHILE DO FOR BEGINLOOP ENDLOOP BREAK CONTINUE READ WRITE AND OR NOT TRUE
-%token FALSE MULT DIV MOD EQ NEQ LT GT LTE GTE SEMICOLON COLON COMMA DIGIT
+%token FALSE MULT DIV MOD EQ NEQ LT GT LTE GTE SEMICOLON COLON COMMA DIGIT SUB
 %token L_SQUARE_BRACKET R_SQUARE_BRACKET L_PAREN R_PAREN ASSIGN NUMBER PLUS MINUS IDENTIFIER
 %token BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS BEGIN_BODY END_BODY
 %token	<int_val>	INTEGER_LITERAL
@@ -24,7 +24,7 @@ int yylex(void);
 %left AND
 %right NOT
 %left EQ NEQ LT GT LTE GTE
-%left MINUS PLUS
+%left MINUS PLUS SUB
 %left MULT DIV MOD
 %right NEG
 %left L_SQUARE_BRACKET R_SQUARE_BRACKET 
@@ -40,7 +40,7 @@ Function		: FUNCTION IDENTIFIER SEMICOLON F_Block_A F_Block_B F_Block_C	{printf(
 			| Function FUNCTION IDENTIFIER SEMICOLON F_Block_A F_Block_B F_Block_C	{printf("Function -> Function IDENTIFIER SEMICOLON F_Block_A F_Block_B F_Block_C\n");}
             		;
 
-F_Block_A		: BEGIN_PARAMS Fun_Dec END_PARAMS	{printf("F_Block_A -> BEGIN_PARAM Decl_loop END_PARAM\n");}
+F_Block_A		: BEGIN_PARAMS Decl_loop END_PARAMS	{printf("F_Block_A -> BEGIN_PARAM Decl_loop END_PARAM\n");}
 			;
 
 F_Block_B		: BEGIN_LOCALS Decl_loop END_LOCALS	{printf("F_Block_B -> BEGIN_LOCAL Decl_loop END_LOCAL\n");}
@@ -68,14 +68,14 @@ Array_lv2		: /*epsilon*/	{printf("Array_lv2 -> epsilon\n");}
 			| L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET	{printf("Array_lv2 -> L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET\n");}
 			;
 
-Identifier_loop		: Identifier	{printf("IDENTIFIER_loop -> IDENTIFIER\n");}
-			| IDENTIFIER COMMA IDENTIFIER_loop	{printf("IDENTIFIER_loop -> IDENTIFIER COMMA IDENTIFIER_loop\n");}
+Identifier_loop		: IDENTIFIER	{printf("Identifier_loop -> IDENTIFIER\n");}
+			| IDENTIFIER COMMA Identifier_loop	{printf("Identifier_loop -> IDENTIFIER COMMA Identifier_loop\n");}
 			;
 
 Statement		: Var ASSIGN Expression	{printf("Statement -> Var ASSIGN Expression\n");}
-			| IF Bool-Expr THEN Stmt_loop Statement_else ENDIF	{printf("Statement ->IF Bool-Expr THEN Stmt_loop Statement_else ENDIF\n");}
-			| WHILE Bool-Expr BEGINLOOP Stmt_loop ENDLOOP	{printf("Statement -> WHILE Bool-Expr BEGINLOOP Stmt_loop ENDLOOP\n");}
-			| DO BEGINLOOP Stmt_loop ENDLOOP WHILE Bool-Expr	{printf("Statement -> DO BEGINLOOP Stmt_loop ENDLOOP WHILE Bool-Expr\n");}
+			| IF Bool_Expr THEN Stmt_loop Statement_else ENDIF	{printf("Statement ->IF Bool-Expr THEN Stmt_loop Statement_else ENDIF\n");}
+			| WHILE Bool_Expr BEGINLOOP Stmt_loop ENDLOOP	{printf("Statement -> WHILE Bool-Expr BEGINLOOP Stmt_loop ENDLOOP\n");}
+			| DO BEGINLOOP Stmt_loop ENDLOOP WHILE Bool_Expr	{printf("Statement -> DO BEGINLOOP Stmt_loop ENDLOOP WHILE Bool-Expr\n");}
 			| FOR Var ASSIGN NUMBER SEMICOLON Bool_Expr SEMICOLON Var ASSIGN Expression BEGINLOOP Stmt_loop ENDLOOP {printf("collapse for loop\n");}
 			| READ Var_loop	{printf("Statement -> READ Var_loop\n");}
 			| WRITE Var_loop	{printf("Statement -> WRITE Var_loop\n");}
@@ -91,7 +91,7 @@ Var_loop		: Var	{printf("Var_loop -> Var\n");}
 			| Var COMMA Var_loop	{printf("Var -> Var COMMA Var_loop\n");}
 			;
 
-Bool_expr		: Relation_And_Expr Rel_And_Expr_loop 	{printf("Bool-Expr -> Relation-And-Expr Rel_And_Expr_loop\n");}
+Bool_Expr		: Relation_And_Expr Rel_And_Expr_loop 	{printf("Bool-Expr -> Relation-And-Expr Rel_And_Expr_loop\n");}
 			;
 
 Rel_And_Expr_loop	: /*epsilon*/	{printf("Rel_And_Expr_loop -> epsilon\n");}
@@ -112,7 +112,7 @@ Relation_Expr		: NOT Relex_Block	{printf("Relation-Expr -> NOT Relex_Block\n");}
 Relex_Block		: Expression Comp Expression	{printf("Relex_Block -> Expression Comp Expression\n");}
 			| TRUE	{printf("Relex_Block -> TRUE\n");}
 			| FALSE	{printf("Relex_Block -> FALSE\n");}
-			| L_PAREN Bool-Expr R_PAREN	{printf("Relex_Block -> L_PAREN Bool-Expr R_PAREN\n");}
+			| L_PAREN Bool_Expr R_PAREN	{printf("Relex_Block -> L_PAREN Bool-Expr R_PAREN\n");}
 			;
 
 Comp			: EQ	{printf("Comp -> EQ\n");}
@@ -123,15 +123,15 @@ Comp			: EQ	{printf("Comp -> EQ\n");}
 			| GTE	{printf("Comp -> GTE\n");}
 			;
 
-Expression		: Multiplicative-Expr	{printf("Expression -> Multiplicative-Expr\n");}
-			| Multiplicative-Expr Addop Expression	{printf("Expression -> Multiplicative-Expr Addop Expression\n");}
+Expression		: Multiplicative_Expr	{printf("Expression -> Multiplicative_Expr\n");}
+			| Multiplicative_Expr Addop Expression	{printf("Expression -> Multiplicative-Expr Addop Expression\n");}
 			;
 
 Addop			: PLUS	{printf("Addop -> PLUS\n");}
 			| MINUS	{printf("Addop -> MINUS\n");}
 			;
 
-Multiplicative_Expr	: Term MET	{printf("Multiplicative-Expr -> Term MET\n");}
+Multiplicative_Expr	: Term MET	{printf("Multiplicative_Expr -> Term MET\n");}
 			;
 
 MET			: /*epsilon*/	{printf("MET -> epsilon\n");}
