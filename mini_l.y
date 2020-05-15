@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+extern FILE * yyin;
 #include <stdlib.h>
 int yyerror(char *s);
 int yylex(void);
@@ -32,7 +33,7 @@ int yylex(void);
 
 %%
 
-Program			: /* empty */	{printf("prog_start -> epsilon\n");}
+Program			: /*epsilon*/	{printf("prog_start -> epsilon\n");}
 			| Program Function	{printf("prog_start -> functions\n");}
 			;
 
@@ -50,7 +51,7 @@ F_Block_C		: BEGIN_BODY Stmt_loop END_BODY		{printf("F_Block_C -> BEGIN_BODY Stm
 			;
 
 Decl_loop		: /*epsilon*/	{printf("Decl_loop -> epsilon\n");}
-			| Declaration SEMICOLON Decl_loop	{printf("Decl_loop -> Declaration SEMICOLON Decl_loop\n");}
+			| Decl_loop Declaration SEMICOLON	{printf("Decl_loop -> Decl_loop Declaration SEMICOLON\n");}
 			;
 
 Stmt_loop		: /*epsilon*/	{printf("stmt_loop -> epsilon\n");}
@@ -159,7 +160,7 @@ Term_exp		: /*epsilon*/	{printf("Term_exp -> epsilon\n");}
 			;
 
 Var			: IDENTIFIER	{printf("Var -> IDENTIFIER\n");}
-			| IDENTIFIER L_SQUARE_BRACKET Expression R_SQUARE_BRACKET	{printf("Var -> L_SQUARE_BRACKET Expression R_SQUARE_BRACKET\n");}
+			| IDENTIFIER L_SQUARE_BRACKET Expression R_SQUARE_BRACKET Var_exp2	{printf("Var -> L_SQUARE_BRACKET Expression R_SQUARE_BRACKET Var_exp2\n");}
 			;
 
 Var_exp2		: /*epsilon*/	{printf("Var_exp2 -> epsilon");}
@@ -178,6 +179,21 @@ int yyerror(char* s)
   exit(1);
 }
 
-int main(){
+int main(int argc, char ** argv){
+	if(argc >= 2){
+		yyin = fopen(argv[1], "r");
+		if(yyin == NULL){
+			yyin = stdin;
+		}
+	}
+	else{
+		yyin = stdin;
+	}
+
 	yyparse();
+
+	return 1;
 }
+
+
+

@@ -1,4 +1,5 @@
 %{
+#include "y.tab.h"
 #include <stdio.h>
 float string2float(char* str);
 int countNums = 0;
@@ -12,75 +13,74 @@ int currline = 1;
 
 COMMENT		##.*
 LETTER		[a-zA-Z]
-DIGIT           [0-9]
-INT             {DIGIT}+
-NUMBER  	{INT}
-IDENT           {LETTER}+({LETTER}|{DIGIT}|[_])*({LETTER}|{DIGIT})*
-IDENT_ERR1      ({DIGIT}|[_])({LETTER}|{DIGIT}|[_])*({LETTER}|{DIGIT})
-IDENT_ERR2      {LETTER}+({LETTER}|{DIGIT}|[_])*[_]
+DIGIT		[0-9]
+INT		{DIGIT}+
+NUMBER		{INT}
+IDENTIFIER	{LETTER}+({LETTER}|{DIGIT}|[_])*({LETTER}|{DIGIT})*
+IDENT_ERR1	({DIGIT}|[_])({LETTER}|{DIGIT}|[_])*({LETTER}|{DIGIT})
+IDENT_ERR2	{LETTER}+({LETTER}|{DIGIT}|[_])*[_]
 %%
 
 {COMMENT}
 [ \t]+          {currpos+=yyleng;}
-"function"      {printf("FUNCTION\n");currpos+=yyleng;}
-"beginparams"   {printf("BEGIN_PARAMS\n");currpos+=yyleng;}
-"endparams"     {printf("END_PARAMS\n");currpos+=yyleng;}
-"beginlocals"   {printf("BEGIN_LOCALS\n");currpos+=yyleng;}
-"endlocals"     {printf("END_LOCALS\n");currpos+=yyleng;}
-"beginbody"     {printf("BEGIN_BODY\n");currpos+=yyleng;}
-"endbody"       {printf("END_BODY\n");currpos+=yyleng;}
-"integer"       {printf("INTEGER\n");currpos+=yyleng;}
-"array"         {printf("ARRAY\n");currpos+=yyleng;}
-"of"            {printf("OF\n");currpos+=yyleng;}
-"if"            {printf("IF\n");currpos+=yyleng;}
-"then"          {printf("THEN\n");currpos+=yyleng;}
-"endif"         {printf("ENDIF\n");currpos+=yyleng;}
-"else"          {printf("ELSE\n");currpos+=yyleng;}
-"while"         {printf("WHILE\n");currpos+=yyleng;}
-"do"            {printf("DO\n");currpos+=yyleng;}
-"for"           {printf("FOR\n");currpos+=yyleng;}
-"beginloop"     {printf("BEGINLOOP\n");currpos+=yyleng;}
-"endloop"       {printf("ENDLOOP\n");currpos+=yyleng;}
-"continue"      {printf("CONTINUE\n");currpos+=yyleng;}
-"read"          {printf("READ\n");currpos+=yyleng;}
-"write"         {printf("WRITE\n");currpos+=yyleng;}
-"and"           {printf("AND\n");currpos+=yyleng;}
-"or"            {printf("OR\n");currpos+=yyleng;}
-"not"           {printf("NOT\n");currpos+=yyleng;}
-"true"          {printf("TRUE\n");currpos+=yyleng;}
-"false"         {printf("FALSE\n");currpos+=yyleng;}
-"return"        {printf("RETURN\n");currpos+=yyleng;}
+"function"      {currpos+=yyleng; return FUNCTION;}
+"beginparams"   {currpos+=yyleng; return BEGIN_PARAMS;}
+"endparams"     {currpos+=yyleng; return END_PARAMS;}
+"beginlocals"   {currpos+=yyleng; return BEGIN_LOCALS;}
+"endlocals"     {currpos+=yyleng; return END_LOCALS;}
+"beginbody"     {currpos+=yyleng; return BEGIN_BODY;}
+"endbody"       {currpos+=yyleng; return END_BODY;}
+"integer"       {currpos+=yyleng; return INTEGER;}
+"array"         {currpos+=yyleng; return ARRAY;}
+"of"            {currpos+=yyleng; return OF;}
+"if"            {currpos+=yyleng; return IF;}
+"then"          {currpos+=yyleng; return THEN;}
+"endif"         {currpos+=yyleng; return ENDIF;}
+"else"          {currpos+=yyleng; return ELSE;}
+"while"         {currpos+=yyleng; return WHILE;}
+"do"            {currpos+=yyleng; return DO;}
+"for"           {currpos+=yyleng; return FOR;}
+"beginloop"     {currpos+=yyleng; return BEGINLOOP;}
+"endloop"       {currpos+=yyleng; return ENDLOOP;}
+"continue"      {currpos+=yyleng; return CONTINUE;}
+"read"          {currpos+=yyleng; return READ;}
+"write"         {currpos+=yyleng; return WRITE;}
+"and"           {currpos+=yyleng; return AND;}
+"or"            {currpos+=yyleng; return OR;}
+"not"           {currpos+=yyleng; return NOT;}
+"true"          {currpos+=yyleng; return TRUE;}
+"false"         {currpos+=yyleng; return FALSE;}
+"return"        {currpos+=yyleng; return RETURN;}
 
-"-"             {printf("SUB\n");currpos+=yyleng;}
-"+"             {printf("ADD\n");currpos+=yyleng;}
-"*"             {printf("MULT\n");currpos+=yyleng;}
-"/"             {printf("DIV\n");currpos+=yyleng;}
-"%"             {printf("MOD\n");currpos+=yyleng;}
+"-"             {currpos+=yyleng; return SUB;}
+"+"             {currpos+=yyleng; return PLUS;}
+"*"             {currpos+=yyleng; return MULT;}
+"/"             {currpos+=yyleng; return DIV;}
+"%"             {currpos+=yyleng; return MOD;}
 
+"=="            {currpos+=yyleng; return EQ;}
+"<>"            {currpos+=yyleng; return NEQ;}
+"<"             {currpos+=yyleng; return LT;}
+">"             {currpos+=yyleng; return GT;}
+"<="            {currpos+=yyleng; return LTE;}
+">="            {currpos+=yyleng; return GTE;}
 
-"=="            {printf("EQ\n");currpos+=yyleng;}
-"<>"            {printf("NEQ\n");currpos+=yyleng;}
-"<"             {printf("LT\n");currpos+=yyleng;}
-">"             {printf("GT\n");currpos+=yyleng;}
-"<="            {printf("LTE\n");currpos+=yyleng;}
-">="            {printf("GTE\n");currpos+=yyleng;}
+";"             {currpos+=yyleng; return SEMICOLON;}
+":"             {currpos+=yyleng; return COLON;}
+","             {currpos+=yyleng; return COMMA;}
+"("             {currpos+=yyleng; return L_PAREN;}
+")"             {currpos+=yyleng; return R_PAREN;}
+"["             {currpos+=yyleng; return L_SQUARE_BRACKET;}
+"]"             {currpos+=yyleng; return R_SQUARE_BRACKET;}
+":="            {currpos+=yyleng; return ASSIGN;}
 
-";"             {printf("SEMICOLON\n");currpos+=yyleng;}
-":"             {printf("COLON\n");currpos+=yyleng;}
-","             {printf("COMMA\n");currpos+=yyleng;}
-"("             {printf("L_PAREN\n");currpos+=yyleng;}
-")"             {printf("R_PAREN\n");currpos+=yyleng;}
-"["             {printf("L_SQUARE_BRACKET\n");currpos+=yyleng;}
-"]"             {printf("R_SQUARE_BRACKET\n");currpos+=yyleng;}
-":="            {printf("ASSIGN\n");currpos+=yyleng;}
+{NUMBER}		{currpos+=yyleng;countNums++; return NUMBER;}
+{IDENT_ERR1}		{printf("identifier \"%s\" must begin with a letter",yytext); currpos+=yyleng;}
+{IDENT_ERR2}		{printf("identifier \"%s\" cannot end with an underscore",yytext); currpos+=yyleng;}
+{IDENTIFIER}		{currpos+=yyleng; return IDENTIFIER;}
 
-{NUMBER}                {printf("NUMBER %s\n",yytext); currpos+=yyleng;countNums++;}
-{IDENT_ERR1}            {printf("identifier \"%s\" must begin with a letter",yytext); currpos+=yyleng;}
-{IDENT_ERR2}            {printf("identifier \"%s\" cannot end with an underscore",yytext); currpos+=yyleng;}
-{IDENT}                 {printf("IDENT %s\n",yytext); currpos+=yyleng;}
-
-\n                      {currline++;currpos=1;}
-.               {printf("unrecognized character\n");currpos+=yyleng;return 1;}
+\n			{currline++;currpos=1;}
+.			{printf("unrecognized character\n");currpos+=yyleng;return 1;}
 
 %%
 
